@@ -32,7 +32,7 @@ jobs:
 
       - name: Build
         working-directory: exampleSite
-        run: hugo --minify
+        run: hugo --minify --baseURL "https://ghimireaacs.github.io/hugo-theme-infra/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
