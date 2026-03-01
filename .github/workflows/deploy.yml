@@ -25,9 +25,12 @@ jobs:
         with:
           hugo-version: "0.127.0"
 
+      - name: Link theme
+        run: ln -s ${{ github.workspace }} ${{ github.workspace }}/exampleSite/themes/infra
+
       - name: Build
         working-directory: exampleSite
-        run: hugo --minify --themesDir ../..
+        run: hugo --minify
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

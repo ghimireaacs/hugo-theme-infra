@@ -2,7 +2,6 @@ baseURL       = "/"
 languageCode  = "en-us"
 title         = "Infrastructure"
 theme         = "infra"
-themesDir     = "../.."
 
 [taxonomies]
 
