@@ -1,0 +1,28 @@
+<aside id="sidebar">
+  <div class="sidebar-header">
+    <div class="label">Infrastructure</div>
+    <div class="site-title"><em>Infra</em> Hub</div>
+  </div>
+
+  <nav>
+    <div class="nav-section-label">Pages</div>
+    <a href="{{ "/" | relURL }}" class="nav-item {{ if .IsHome }}active{{ end }}">
+      <span class="nav-icon">◈</span>
+      <span class="nav-name">Overview</span>
+    </a>
+
+    <div class="nav-section-label">Hardware</div>
+    {{ $hwPages := where .Site.RegularPages "Section" "hardware" }}
+    {{ range $hwPages }}
+    <a href="{{ .RelPermalink }}" class="nav-item server-item {{ if eq $.RelPermalink .RelPermalink }}active{{ end }}{{ with .Params.platform }} platform-{{ . }}{{ end }}">
+      <span class="nav-dot {{ .Params.status }}"></span>
+      <span class="nav-name">{{ .Title }}</span>
+      <span class="nav-tag {{ .Params.status }}">{{ .Params.status }}</span>
+    </a>
+    {{ end }}
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="footer-note">Add a server: <code>content/hardware/name.md</code></div>
+  </div>
+</aside>

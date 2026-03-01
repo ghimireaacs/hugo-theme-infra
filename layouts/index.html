@@ -1,0 +1,69 @@
+{{ define "main" }}
+{{ $hwPages := where .Site.RegularPages "Section" "hardware" }}
+{{ $online := where $hwPages "Params.status" "online" }}
+{{ $offline := where $hwPages "Params.status" "offline" }}
+{{ $maintenance := where $hwPages "Params.status" "maintenance" }}
+
+<div class="page-header">
+  <div class="eyebrow">Hardware Inventory</div>
+  <h1>Server <em>Overview</em></h1>
+  <p>{{ len $hwPages }} servers tracked &mdash; {{ len $online }} online, {{ len $maintenance }} in maintenance, {{ len $offline }} offline.</p>
+</div>
+
+<div class="stat-row">
+  <div class="stat-card">
+    <div class="stat-num">{{ len $hwPages }}</div>
+    <div class="stat-label">Total Servers</div>
+  </div>
+  <div class="stat-card green">
+    <div class="stat-num">{{ len $online }}</div>
+    <div class="stat-label">Online</div>
+  </div>
+  <div class="stat-card amber">
+    <div class="stat-num">{{ len $maintenance }}</div>
+    <div class="stat-label">Maintenance</div>
+  </div>
+  <div class="stat-card red">
+    <div class="stat-num">{{ len $offline }}</div>
+    <div class="stat-label">Offline</div>
+  </div>
+</div>
+
+<div class="section-title">All Servers</div>
+
+<div class="server-grid">
+  {{ range $hwPages }}
+  <a href="{{ .RelPermalink }}" class="server-card{{ with .Params.platform }} platform-{{ . }}{{ end }}">
+    <div class="card-top">
+      <div class="card-hostname">{{ .Title }}</div>
+      <div class="status-pill {{ .Params.status }}">{{ .Params.status }}</div>
+    </div>
+    {{ with .Params.platform }}<div class="platform-badge {{ . }}">{{ . }}</div>{{ end }}
+    <div class="card-role">{{ .Params.role }}</div>
+    <div class="card-specs">
+      <div class="spec-row">
+        <span class="spec-label">CPU</span>
+        <span class="spec-val">{{ .Params.cpu_model }} &mdash; {{ .Params.cpu_cores }}c / {{ .Params.cpu_threads }}t</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-label">RAM</span>
+        <span class="spec-val">{{ .Params.ram_amount }} {{ .Params.ram_type }}</span>
+      </div>
+      {{ with .Params.storage }}
+      <div class="spec-row">
+        <span class="spec-label">Disk</span>
+        <span class="spec-val">{{ len . }} pool{{ if gt (len .) 1 }}s{{ end }}</span>
+      </div>
+      {{ end }}
+      {{ with .Params.nics }}
+      <div class="spec-row">
+        <span class="spec-label">NICs</span>
+        <span class="spec-val">{{ len . }} interface{{ if gt (len .) 1 }}s{{ end }}</span>
+      </div>
+      {{ end }}
+    </div>
+    <div class="card-arrow">→</div>
+  </a>
+  {{ end }}
+</div>
+{{ end }}

@@ -1,0 +1,33 @@
+{{ define "main" }}
+{{ $hwPages := .Pages }}
+
+<div class="page-header">
+  <div class="eyebrow">Section</div>
+  <h1>Hardware <em>Inventory</em></h1>
+  <p>{{ len $hwPages }} physical servers.</p>
+</div>
+
+<div class="server-grid">
+  {{ range $hwPages }}
+  <a href="{{ .RelPermalink }}" class="server-card{{ with .Params.platform }} platform-{{ . }}{{ end }}">
+    <div class="card-top">
+      <div class="card-hostname">{{ .Title }}</div>
+      <div class="status-pill {{ .Params.status }}">{{ .Params.status }}</div>
+    </div>
+    {{ with .Params.platform }}<div class="platform-badge {{ . }}">{{ . }}</div>{{ end }}
+    <div class="card-role">{{ .Params.role }}</div>
+    <div class="card-specs">
+      <div class="spec-row">
+        <span class="spec-label">CPU</span>
+        <span class="spec-val">{{ .Params.cpu_model }}</span>
+      </div>
+      <div class="spec-row">
+        <span class="spec-label">RAM</span>
+        <span class="spec-val">{{ .Params.ram_amount }} {{ .Params.ram_type }}</span>
+      </div>
+    </div>
+    <div class="card-arrow">→</div>
+  </a>
+  {{ end }}
+</div>
+{{ end }}

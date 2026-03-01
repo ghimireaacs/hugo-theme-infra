@@ -1,0 +1,156 @@
+{{ define "main" }}
+{{ $p := .Params }}
+
+<div class="page-header">
+  <div class="eyebrow">
+    <a href="{{ "/hardware" | relURL }}">Hardware</a> / {{ .Title }}
+  </div>
+  <h1>{{ .Title }} <span class="status-pill {{ $p.status }}">{{ $p.status }}</span></h1>
+  <p class="server-role">{{ $p.role }}</p>
+</div>
+
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> CPU</div>
+  <div class="hw-table">
+    <div class="hw-row">
+      <div class="hw-key">Model</div>
+      <div class="hw-val">{{ $p.cpu_model }}</div>
+    </div>
+    <div class="hw-row">
+      <div class="hw-key">Cores</div>
+      <div class="hw-val">{{ $p.cpu_cores }} cores / {{ $p.cpu_threads }} threads</div>
+    </div>
+  </div>
+</section>
+
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Memory</div>
+  <div class="hw-table">
+    <div class="hw-row">
+      <div class="hw-key">Capacity</div>
+      <div class="hw-val">{{ $p.ram_amount }}</div>
+    </div>
+    <div class="hw-row">
+      <div class="hw-key">Type</div>
+      <div class="hw-val">{{ $p.ram_type }}</div>
+    </div>
+    {{ if gt $p.ram_slots_total 0 }}
+    <div class="hw-row">
+      <div class="hw-key">Slots</div>
+      <div class="hw-val">
+        {{ $p.ram_slots_used }} used / {{ $p.ram_slots_total }} total
+        <div class="slot-bar">
+          {{ range seq $p.ram_slots_total }}
+            <div class="slot {{ if le . $p.ram_slots_used }}filled{{ end }}"></div>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+
+{{ with $p.storage }}
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Storage</div>
+  <div class="hw-table">
+    {{ range . }}
+    <div class="hw-row">
+      <div class="hw-key">{{ .label }}</div>
+      <div class="hw-val">{{ .drives }} <span class="config-tag">{{ .config }}</span></div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.nics }}
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Network</div>
+  <div class="hw-table">
+    {{ range $i, $nic := . }}
+    <div class="hw-row">
+      <div class="hw-key">NIC {{ add $i 1 }}</div>
+      <div class="hw-val">{{ $nic }}</div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.upgrades }}
+<section class="hw-section upgrades">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Upgrade Opportunities</div>
+  <div class="upgrade-list">
+    {{ range . }}
+    <div class="upgrade-item priority-{{ .priority }}">
+      <div class="upgrade-top">
+        <span class="upgrade-component">{{ .item }}</span>
+        <span class="priority-badge {{ .priority }}">{{ .priority }}</span>
+      </div>
+      <div class="upgrade-note">{{ .note }}</div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with .Content }}
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Notes</div>
+  <div class="server-notes">{{ . }}</div>
+</section>
+{{ end }}
+
+{{ with $p.vms }}
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Virtual Machines & Containers</div>
+  <div class="hw-table">
+    {{ range . }}
+    <div class="hw-row">
+      <div class="hw-key">
+        <div class="vm-name">{{ .name }}</div>
+        <div class="vm-meta">#{{ .vmid }} · {{ .type }}</div>
+      </div>
+      <div class="hw-val">
+        <div class="vm-top">
+          <span class="vm-role">{{ .role }}</span>
+          <span class="vm-status {{ .status }}">{{ .status }}</span>
+        </div>
+        <div class="vm-specs">{{ .cores }}c · {{ .ram }} · {{ .disk }}{{ with .ip }} · <span class="vm-ip">{{ . }}</span>{{ end }}</div>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+{{ with $p.cluster_nodes }}
+<section class="hw-section">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Cluster Nodes</div>
+  <div class="hw-table">
+    {{ range . }}
+    <div class="hw-row">
+      <div class="hw-key">
+        <div class="vm-name">{{ .name }}</div>
+        <div class="vm-meta">{{ .role }}</div>
+      </div>
+      <div class="hw-val">
+        {{ if .host_link }}<a href="{{ .host_link }}" class="node-link">{{ .host }}</a>{{ else }}<span class="vm-role">{{ .host }}</span>{{ end }}
+        {{ with .vmid }}<span class="vm-meta"> · VM #{{ . }}</span>{{ end }}
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
+
+<section class="hw-section services-placeholder">
+  <div class="hw-section-label"><span class="hw-icon">⬡</span> Running Services</div>
+  <div class="placeholder-box">
+    <span class="placeholder-label">Coming soon</span>
+    Service tracking will be added in a future update. Add a <code>services</code> field to this server's frontmatter.
+  </div>
+</section>
+
+{{ end }}
